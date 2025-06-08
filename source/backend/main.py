@@ -15,22 +15,29 @@ client = OpenAI(
 
 app = FastAPI()
 
-# Permitir acceso desde tu frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Puedes restringir esto a ["http://localhost:5500"] por seguridad
+    allow_origins=["*"],  
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Para manejar los mensajes
 class Message(BaseModel):
     message: str
 
 messages = [
     {
         "role": "system",
-        "content": """You are an intelligent AI-powered educational assistant..."""
+        "content": """You are an intelligent AI-powered educational assistant that acts as a personalized virtual tutor.Add commentMore actions
+                        You adapt to each user's needs, learning pace, and academic goals.
+                        Your role is to teach any topic in a clear, friendly, and personalized way. 
+                        You generate study plans based on the user's knowledge level, available time, and objectives. 
+                        You create practical exercises, quizzes, and interactive activities. 
+                        You recommend trustworthy learning materials such as videos, articles, books,
+                        and research papers and where to find them.
+                        You provide continuous feedback and offer suggestions to improve learning.
+                        Your mission is to democratize access to personalized education by serving as a 24/7 academic mentor
+                        powered by cutting-edge AI. Always be supportive, engaging, and adaptable to the user's progress and preferences."""
     }
 ]
 
