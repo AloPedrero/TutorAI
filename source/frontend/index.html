@@ -6,9 +6,14 @@
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <style>
     #inputContainer {
+      position: fixed;
+      bottom: 20px;
+      left: 0;
+      width: 95%;
       display: flex;
-      width: 100%;
-      margin-top: 20px;
+      padding: 0 10px;
+      background-color: white;
+      box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
     }
 
     #userInput {
@@ -39,13 +44,37 @@
       background-color: #f9f9f9;
       font-family: Arial, sans-serif;
     }
+
+    #chatHistory{
+      margin-top: 20px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      background-color: #f9f9f9;
+      font-family: Arial, Helvetica, sans-serif;
+      height: 250px;
+      overflow-y: auto;
+    }
+
+    .message{
+      margin-bottom: 10px;
+    }
+
+    .user{
+      color: #0b5394;
+      font-weight: bold;
+    }
+
+    .bot{
+      color: #3c763d;
+    }
+
+
   </style>
 </head>
 <body>
   <h1>Chat with TutorAI</h1>
+  <div id="chatHistory"><div>
 
-  <p><strong>Response:</strong></p>
-  <div id="response"></div>
 
   <div id="inputContainer">
     <input 
@@ -58,23 +87,44 @@
 
   <script>
     async function sendMessage() {
-      const input = document.getElementById("userInput").value;
-      const responseElement = document.getElementById("response");
+      const inputElement = document.getElementById("userInput");
+      const input = inputElement.value.trim();
+      const chatHistory = document.getElementById("chatHistory");
 
-      const res = await fetch("http://localhost:8000/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ message: input })
-      });
+      if (!input) return;
 
-      const data = await res.json();
+      const userMessage = document.createElement("div");
+      userMessage.className = "message user";
+      userMessage.textContent = "You: " + input;
+      chatHistory.appendChild(userMessage);
 
-      // Render Markdown to HTML
-      const html = marked.parse(data.response);
-      responseElement.innerHTML = html;
-    }
+      inputElement.value = "";
+
+      try {
+        const res = await fetch("http://localhost:8000/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ message: input })
+        });
+
+        const data = await res.json();
+
+        const botMessage = document.createElement("div");
+        botMessage.className = "message bot";
+        botMessage.innerHTML = "<strong>TutorAI:</strong> " + marked.parse(data.response);
+        chatHistory.appendChild(botMessage);
+
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+
+      } catch (error) {
+        const errorMessage = document.createElement("div");
+        errorMessage.className = "message bot";
+        errorMessage.innerHTML = "<strong>Error:</strong> Couldn't fetch response.";
+        chatHistory.appendChild(errorMessage);
+      }
+}
   </script>
 </body>
 </html>
