@@ -8,26 +8,25 @@
     #inputContainer {
       position: fixed;
       bottom: 20px;
-      left: 0;
       width: 95%;
       display: flex;
-      padding: 0 10px;
       background-color: white;
       box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
     }
 
     #userInput {
       width: 85%;
-      height: 50px;
+      height: 60px;
       font-size: 18px;
       padding: 10px;
       box-sizing: border-box;
     }
 
     #sendButton {
-      width: 15%;
-      height: 50px;
+      width: 20%;
+      height: 60px;
       font-size: 18px;
+      margin-left: 2px;
       padding: 10px;
       box-sizing: border-box;
       background-color: #4CAF50;
@@ -47,11 +46,14 @@
 
     #chatHistory{
       margin-top: 20px;
+      margin-bottom: 20px;
+      margin-left: 5px;
+      margin-right: 5px;
       padding: 10px;
       border: 1px solid #ddd;
       background-color: #f9f9f9;
       font-family: Arial, Helvetica, sans-serif;
-      height: 250px;
+      height: 750px;
       overflow-y: auto;
     }
 
@@ -68,21 +70,28 @@
       color: #3c763d;
     }
 
+    .presetButton{
+      margin-right: 2px;
+    }
 
   </style>
 </head>
 <body>
-  <h1>Chat with TutorAI</h1>
+  <h1>TutorAI 🎓</h1>
   <div id="chatHistory"><div>
 
 
   <div id="inputContainer">
+    <button class = "presetButton" onclick = "sendPreset('explain')">🧠 Explain a topic</button>
+    <button class = "presetButton" onclick = "sendPreset('explain')">📚 Study plan</button>
+    <button class = "presetButton" onclick = "sendPreset('explain')">❓ Quiz time</button>
     <input 
       type="text" 
       id="userInput" 
       placeholder="Type your question"
     />
     <button id="sendButton" onclick="sendMessage()">🚀 Send</button>
+    
   </div>
 
   <script>
@@ -125,6 +134,20 @@
         chatHistory.appendChild(errorMessage);
       }
 }
+
+    function sendPreset(type) {
+      let prompt = "";
+      if (type === "explain") {
+        prompt = "I want you to explain the next topic that I'm going to write:";
+      } else if (type === "study") {
+        prompt = "I want you to help me create a study plan for the next topic I'm going to write:";
+      } else if (type === "quiz") {
+        prompt = "I want you to create and apply a short quiz of the next topic I'm going to write:";
+      }
+
+      document.getElementById("userInput").value = prompt;
+      sendMessage()
+    }
   </script>
 </body>
 </html>
